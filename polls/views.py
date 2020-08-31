@@ -7,14 +7,16 @@ from django.contrib.auth.models import User
 
 def home(request):
     questions = Questions.objects.all()
+    score = 0
     if request.method == 'POST':
         for question in questions:
             fields = request.POST[str(question.id)]
-            UserAnswer.objects.create(user=request.user, question=question, answer=fields)
+            if fields == question.answer:
+                score += 5
             # for answer in user_answers:
             #     if answer.answer == question.answer:
             #         print('You got it')
-        return HttpResponse('Answer gotten')
+        return HttpResponse(f'The score is {score}')
     else:
         context = {'questions': questions}
         return render(request, 'polls/index.html', context)
